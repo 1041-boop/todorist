@@ -199,7 +199,7 @@
 .theme-name { font-size: 12px; font-weight: 700; color: var(--ink2); letter-spacing: .04em; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; color: var(--ink); font-size: 15px; overscroll-behavior: none; }
-body { display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; min-height: 100dvh; padding-top: var(--safe-top); }
+body { display: flex; flex-direction: column; max-width: 480px; margin: 0 auto; height: 100dvh; padding-top: var(--safe-top); box-sizing: border-box; }
 button { font-family: inherit; cursor: pointer; }
 
 /* ── Screens ── */
@@ -352,7 +352,7 @@ button { font-family: inherit; cursor: pointer; }
 .fab:active { transform: scale(.93); }
 
 /* ── Bottom nav ── */
-.bnav { height: calc(var(--nav-h) + var(--safe)); padding-bottom: var(--safe); background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-shrink: 0; position: sticky; bottom: 0; z-index: 10; }
+.bnav { height: calc(var(--nav-h) + var(--safe)); padding-bottom: var(--safe); background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-shrink: 0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; max-width: 480px; margin: 0 auto; }
 .nbtn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: none; background: none; cursor: pointer; padding: 8px 0; }
 .nicon { color: var(--ink3); transition: color .15s; }
 .nlabel { font-size: 10px; font-weight: 600; color: var(--ink3); letter-spacing: .04em; transition: color .15s; }
