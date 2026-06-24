@@ -1570,6 +1570,43 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 
+// ── iPhone safe-area を JS で確実に適用 ──────────
+(function fixLayout(){
+  const bnav = document.querySelector('.bnav');
+  if(!bnav) return;
+
+  // CSS変数から safe-area-inset-bottom を取得
+  const safeBottom = parseInt(
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--safe').trim() || '0'
+  ) || 0;
+
+  // 画面の高さとコンテンツの高さの差を計算
+  const winH = window.innerHeight;
+  const bodyH = document.documentElement.clientHeight;
+  const diff = Math.max(0, winH - bodyH);
+
+  // より大きい値を採用（34px = iPhoneホームバー標準）
+  const safeH = Math.max(safeBottom, diff, 0);
+
+  if(safeH > 0){
+    bnav.style.paddingBottom = safeH + 'px';
+    bnav.style.height = (58 + safeH) + 'px';
+  }
+
+  // body全体を画面にぴったり合わせる
+  document.body.style.height = winH + 'px';
+  document.body.style.maxHeight = winH + 'px';
+})();
+
+window.addEventListener('resize', function(){
+  const bnav = document.querySelector('.bnav');
+  if(!bnav) return;
+  const winH = window.innerHeight;
+  document.body.style.height = winH + 'px';
+  document.body.style.maxHeight = winH + 'px';
+});
+
 // ══════════════════════════════════════════════════
 // パスコード機能
 // ══════════════════════════════════════════════════
