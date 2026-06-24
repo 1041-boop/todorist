@@ -211,6 +211,7 @@ body {
   width: 100%; height: 100dvh;
   max-width: 480px; margin: 0 auto;
   padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
   overflow: hidden;
   overscroll-behavior: none;
@@ -372,12 +373,20 @@ button { font-family: inherit; cursor: pointer; }
 .bnav { 
   display: flex; 
   flex-shrink: 0;
-  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
+  height: var(--nav-h);
   background: var(--surface); 
   border-top: 1px solid var(--border); 
   box-sizing: border-box;
   z-index: 10;
+  position: relative;
+}
+/* ホームバー部分も白で埋める */
+.bnav::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  height: env(safe-area-inset-bottom);
+  background: var(--surface);
 }
 .nbtn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: none; background: none; cursor: pointer; padding: 8px 0; }
 .nicon { color: var(--ink3); transition: color .15s; }
@@ -475,7 +484,7 @@ textarea.finput { min-height: 80px; resize: none; line-height: 1.55; }
       <span class="hdr-title">Tasks</span>
       <div class="hdr-right">
         <span class="hdr-sub" id="badge-tasks" style="display:none"></span>
-        <button id="tasks-settings-btn" style="background:none;border:none;color:var(--ink3);display:flex;align-items:center;padding:4px;border-radius:8px;" aria-label="設定">
+        <button id="tasks-settings-btn" class="tab-settings-btn" onclick="goToSettings()" style="background:none;border:none;color:var(--ink3);display:flex;align-items:center;padding:4px;border-radius:8px;cursor:pointer;" aria-label="設定">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         </button>
       </div>
@@ -507,7 +516,12 @@ textarea.finput { min-height: 80px; resize: none; line-height: 1.55; }
 <!-- WISH -->
 <div class="screen" id="screen-wish">
   <div class="hdr">
-    <div class="hdr-row"><span class="hdr-title">Wishlist</span><span class="hdr-sub" id="badge-wish">—</span></div>
+    <div class="hdr-row">
+      <span class="hdr-title">Wishlist</span>
+      <div class="hdr-right">
+        <button class="tab-settings-btn" onclick="goToSettings()" style="background:none;border:none;color:var(--ink3);display:flex;align-items:center;padding:4px;border-radius:8px;cursor:pointer;" aria-label="設定"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+      </div>
+    </div>
   </div>
   <div class="scroll" id="list-wish"></div>
   <button class="fab" id="fab-wish" aria-label="追加">
@@ -518,7 +532,12 @@ textarea.finput { min-height: 80px; resize: none; line-height: 1.55; }
 <!-- BOOKS -->
 <div class="screen" id="screen-books">
   <div class="hdr">
-    <div class="hdr-row"><span class="hdr-title">Books</span><span class="hdr-sub" id="badge-books">—</span></div>
+    <div class="hdr-row">
+      <span class="hdr-title">Books</span>
+      <div class="hdr-right">
+        <button class="tab-settings-btn" onclick="goToSettings()" style="background:none;border:none;color:var(--ink3);display:flex;align-items:center;padding:4px;border-radius:8px;cursor:pointer;" aria-label="設定"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+      </div>
+    </div>
     <div class="filter-bar">
       <button class="pill on" data-bf="all">すべて</button>
       <button class="pill" data-bf="want">読みたい</button>
@@ -535,7 +554,12 @@ textarea.finput { min-height: 80px; resize: none; line-height: 1.55; }
 <!-- MEMO -->
 <div class="screen" id="screen-memo">
   <div class="hdr">
-    <div class="hdr-row"><span class="hdr-title">Memo</span><span class="hdr-sub" id="badge-memo">—</span></div>
+    <div class="hdr-row">
+      <span class="hdr-title">Memo</span>
+      <div class="hdr-right">
+        <button class="tab-settings-btn" onclick="goToSettings()" style="background:none;border:none;color:var(--ink3);display:flex;align-items:center;padding:4px;border-radius:8px;cursor:pointer;" aria-label="設定"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+      </div>
+    </div>
   </div>
   <div class="scroll" id="list-memo"></div>
   <button class="fab" id="fab-memo" aria-label="メモを追加">
@@ -1204,7 +1228,6 @@ document.getElementById('wc-save').addEventListener('click',()=>{
 });
 function renderWishes(){
   const el=document.getElementById('list-wish');
-  document.getElementById('badge-wish').textContent=S.wishes.length?`${S.wishes.length} 件`:'—';
   if(!S.wishes.length){
     el.innerHTML=`<div class="empty"><svg class="empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="empty-text">やりたいことを追加しましょう</div></div>`;
     return;
@@ -1253,7 +1276,6 @@ document.getElementById('bc-save').addEventListener('click',()=>{
 function renderBooks(){
   const el=document.getElementById('list-books');
   const items=bf==='all'?S.books:S.books.filter(b=>b.status===bf);
-  document.getElementById('badge-books').textContent=S.books.length?`${S.books.length} 冊`:'—';
   if(!items.length){
     el.innerHTML=`<div class="empty"><svg class="empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><div class="empty-text">本を追加しましょう</div></div>`;
     return;
@@ -1301,7 +1323,6 @@ document.getElementById('mc-save').addEventListener('click',()=>{
 });
 function renderMemos(){
   const el=document.getElementById('list-memo');
-  document.getElementById('badge-memo').textContent=S.memos.length?`${S.memos.length} 件`:'—';
   if(!S.memos.length){
     el.innerHTML=`<div class="empty"><svg class="empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><div class="empty-text">メモを追加しましょう</div></div>`;
     return;
@@ -1326,14 +1347,15 @@ function renderMemos(){
 }
 
 renderTasks(); renderWishes(); renderBooks(); renderMemos();
-// Tasks画面の歯車ボタン → Settings画面へ
-document.getElementById('tasks-settings-btn').addEventListener('click',()=>{
+// 設定画面へ遷移（全タブの歯車ボタン共通）
+function goToSettings(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
   document.getElementById('screen-settings').classList.add('active');
-  document.querySelector('[data-screen="settings"]').classList.add('on');
+  const navBtn = document.querySelector('[data-screen="settings"]');
+  if(navBtn) navBtn.classList.add('on');
   renderSettings();
-});
+}
 
 
 
