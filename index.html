@@ -1567,7 +1567,20 @@ document.getElementById('cat-modal-save').addEventListener('click',()=>{
 });
 
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    // 新しいSWが見つかったら自動でリロード
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if(newWorker.state === 'activated'){
+          window.location.reload();
+        }
+      });
+    });
+  }).catch(()=>{});
+
+  // 定期的に更新をチェック（アプリ起動時）
+  navigator.serviceWorker.ready.then(reg => reg.update());
 }
 
 // ── iPhone safe-area を JS で確実に適用 ──────────
