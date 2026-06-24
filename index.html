@@ -200,21 +200,23 @@
 .theme-preview-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .theme-name { font-size: 12px; font-weight: 700; color: var(--ink2); letter-spacing: .04em; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { 
+html { 
   margin: 0; padding: 0; 
-  width: 100%; height: 100%; 
+  width: 100%; height: 100dvh; 
   overflow: hidden;
   background: var(--bg);
-  font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
-  color: var(--ink); font-size: 15px;
 }
 body { 
   display: flex; flex-direction: column;
+  width: 100%; height: 100dvh;
   max-width: 480px; margin: 0 auto;
-  /* iPhoneのノッチ・ホームバーを考慮 */
   padding-top: env(safe-area-inset-top);
   box-sizing: border-box;
+  overflow: hidden;
   overscroll-behavior: none;
+  background: var(--bg);
+  font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  color: var(--ink); font-size: 15px;
 }
 button { font-family: inherit; cursor: pointer; }
 
@@ -1582,43 +1584,6 @@ if('serviceWorker' in navigator){
   // 定期的に更新をチェック（アプリ起動時）
   navigator.serviceWorker.ready.then(reg => reg.update());
 }
-
-// ── iPhone safe-area を JS で確実に適用 ──────────
-(function fixLayout(){
-  const bnav = document.querySelector('.bnav');
-  if(!bnav) return;
-
-  // CSS変数から safe-area-inset-bottom を取得
-  const safeBottom = parseInt(
-    getComputedStyle(document.documentElement)
-      .getPropertyValue('--safe').trim() || '0'
-  ) || 0;
-
-  // 画面の高さとコンテンツの高さの差を計算
-  const winH = window.innerHeight;
-  const bodyH = document.documentElement.clientHeight;
-  const diff = Math.max(0, winH - bodyH);
-
-  // より大きい値を採用（34px = iPhoneホームバー標準）
-  const safeH = Math.max(safeBottom, diff, 0);
-
-  if(safeH > 0){
-    bnav.style.paddingBottom = safeH + 'px';
-    bnav.style.height = (58 + safeH) + 'px';
-  }
-
-  // body全体を画面にぴったり合わせる
-  document.body.style.height = winH + 'px';
-  document.body.style.maxHeight = winH + 'px';
-})();
-
-window.addEventListener('resize', function(){
-  const bnav = document.querySelector('.bnav');
-  if(!bnav) return;
-  const winH = window.innerHeight;
-  document.body.style.height = winH + 'px';
-  document.body.style.maxHeight = winH + 'px';
-});
 
 // ══════════════════════════════════════════════════
 // パスコード機能
